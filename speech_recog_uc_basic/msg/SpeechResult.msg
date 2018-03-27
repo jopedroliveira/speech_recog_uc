@@ -1,0 +1,2 @@
+string result
+float32 confidence
