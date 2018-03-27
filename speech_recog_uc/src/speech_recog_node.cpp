@@ -338,11 +338,12 @@ static void speech_callback(short * data, int readbyteSize, bool isSOS,
 
 				// compute gcc_phat of X1 and X2
 				(recog_pointers->fft_obj)->gcc_phat(x, y, GLOBAL_NFFT, chunkSizeSamples_N);
-				(recog_pointers->fft_obj)->shift_np(y, GLOBAL_NFFT, 21);
+				(recog_pointers->fft_obj)->shift_np(y, GLOBAL_NFFT, DOA_HISTOGRAM_MAX_LAG+1 );
 
 				// Find max in y
 				HIST_MAX_POS = HIST_MAX_VALUE = y[0];
-				for (int v = 0; v < 41; v++) {
+				for (int v = 0; v < DOA_HISTOGRAM_TOT_NUM; v++) {
+
 					if (y[v] > HIST_MAX_VALUE) { 
 						HIST_MAX_VALUE = y[v]; 
 						HIST_MAX_POS = v;
@@ -358,7 +359,7 @@ static void speech_callback(short * data, int readbyteSize, bool isSOS,
 		if(GLOBAL_NUMBER_OF_CHANNELS == 2){
 			// FINALLY ESTIMATE THE DIRECTION OF ARRIVAL ================================
 			HIST_MAX_POS = HIST_MAX_VALUE = 0;
-			for (int h = 0; h < 41; h++) {
+			for (int h = 0; h < DOA_HISTOGRAM_TOT_NUM; h++) {
 				if (direction_of_arrival_histogram[h] >HIST_MAX_VALUE) {
 					HIST_MAX_POS = h;
 					HIST_MAX_VALUE = direction_of_arrival_histogram[h];
@@ -366,10 +367,10 @@ static void speech_callback(short * data, int readbyteSize, bool isSOS,
 			}
 
 			double delta,dd,k;
-			k = (lags[HIST_MAX_POS]);
+			k = lags[HIST_MAX_POS];
 			delta = -k * GLOBAL_SPEED_OF_SOUND / (GLOBAL_SAMPLE_RATE);
 			dd = -asin(delta / GLOBAL_MIC_DISTANCE);
-			ROS_INFO("DIRECTION OF ARRIVAL ANGLE: %f (rad) %f (def)", dd, (dd* 180.0 / PI));
+			ROS_INFO("DIRECTION OF ARRIVAL ANGLE: %f(rad) %f(deg)",dd,(dd* 180.0 / PI));
 			// convert dd to direct way 
 			speech_recog_uc::DOAResult doa_result;
 			doa_result.angle = (float) -dd;

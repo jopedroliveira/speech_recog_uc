@@ -67,11 +67,9 @@ int chunkSizeSamples_N = 0.03 * GLOBAL_SAMPLE_RATE;
 int chunkMoveSamples_M = 0.01 * GLOBAL_SAMPLE_RATE;
 int chunckOverSamples_O = chunkSizeSamples_N - chunkMoveSamples_M;
 int HIST_MAX_POS; double HIST_MAX_VALUE;
-int direction_of_arrival_histogram[41];
-int MaxLag = 20;
-int lags[41] = {-20, -19, -18, -17, -16, -15, -14, -13, -12, -11, -10, 
-					-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 
-					6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+int * direction_of_arrival_histogram;
+int * lags; 
+
 
 Real * hamwin = (Real *) malloc(chunkSizeSamples_N*sizeof(Real));
 Real t = (Real) (2.0 * PI / (chunkSizeSamples_N - 1)); 	

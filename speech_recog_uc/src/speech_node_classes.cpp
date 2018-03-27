@@ -105,14 +105,16 @@ void decimation_function(short * dest, short * orig,
 
 void reset_doa_vars(){
 // Restarts doa estimation variables
-	for (int clc = 0; clc  < 41; clc++) {
+	for(int i = -DOA_HISTOGRAM_MAX_LAG; i <= DOA_HISTOGRAM_MAX_LAG; i++){		
+		lags[i+DOA_HISTOGRAM_MAX_LAG] = i;
+	}
+	for (int clc = 0; clc  < DOA_HISTOGRAM_TOT_NUM; clc++) {
 		direction_of_arrival_histogram[clc] = 0;
 	}
 	for (int k = 0; k < GLOBAL_NFFT; k++) {
 			x[k] = 0; y[k] = 0;
 			x0[k] = 0; x1[k] = 0;
 	}
-
 	// Compute the hamming window of chunkSizeSamples_N samples
 	for(int wn = 0; wn < chunkSizeSamples_N; wn++ ){
 		hamwin[wn] = (Real) (0.54 - 0.46*cos(wn*t));
@@ -220,6 +222,17 @@ void VADClass::vadinit(void) {
 		aTemporalConst);
 
 	if(!isFromFile){
+		// If the audio comes from microphone, then doa_histogram limits
+		// must be computed with the global parameters
+		DOA_HISTOGRAM_MAX_LAG = (int) round(GLOBAL_MIC_DISTANCE/GLOBAL_SPEED_OF_SOUND*
+		GLOBAL_SAMPLE_RATE)-1;
+		DOA_HISTOGRAM_TOT_NUM = 2*DOA_HISTOGRAM_MAX_LAG+1;
+		ROS_WARN("Re-defined global macro DOA_HISTOGRAM_MAX_LAG as %d and \
+DOA_HISTOGRAM_TOT_NUM as %d",DOA_HISTOGRAM_MAX_LAG,DOA_HISTOGRAM_TOT_NUM);
+		direction_of_arrival_histogram = new int[DOA_HISTOGRAM_TOT_NUM];
+		lags = new int[DOA_HISTOGRAM_TOT_NUM]; 
+		reset_doa_vars();
+
 		// If the audio comes from microphone, then the buffer must have the given
 		// parameters
 		cbuff = new CircularBuffer(num_channels, sample_rate, cbuffer_duration, 
@@ -341,14 +354,26 @@ void VADClass::vadinit(void) {
 		GLOBAL_NUMBER_OF_CHANNELS = wavhdr->nchan;
 		GLOBAL_SAMPLE_RATE = wavhdr->fs;
 
-		ROS_INFO("Re-defined global macro GLOBAL_NUMBER_OF_CHANNELS as %d and \
+		ROS_WARN("Re-defined global macro GLOBAL_NUMBER_OF_CHANNELS as %d and \
 GLOBAL_SAMPLE_RATE as %d", (int)GLOBAL_NUMBER_OF_CHANNELS, 
 			(int)GLOBAL_SAMPLE_RATE);
+
+		// If the audio comes from a file, then doa_histogram limits
+		// must be computed with the new global parameters
+		DOA_HISTOGRAM_MAX_LAG = (int) round(GLOBAL_MIC_DISTANCE/GLOBAL_SPEED_OF_SOUND*
+		GLOBAL_SAMPLE_RATE)-1;
+		DOA_HISTOGRAM_TOT_NUM = 2*DOA_HISTOGRAM_MAX_LAG+1;
+		ROS_WARN("Re-defined global macro DOA_HISTOGRAM_MAX_LAG as %d and \
+DOA_HISTOGRAM_TOT_NUM as %d",DOA_HISTOGRAM_MAX_LAG,DOA_HISTOGRAM_TOT_NUM);
+		direction_of_arrival_histogram = new int[DOA_HISTOGRAM_TOT_NUM];
+		lags = new int[DOA_HISTOGRAM_TOT_NUM]; 
+		reset_doa_vars();
+
 
 		cbuff = new CircularBuffer(GLOBAL_NUMBER_OF_CHANNELS, GLOBAL_SAMPLE_RATE,
 			cbuffer_duration, chunk_duration); 
 
-		ROS_WARN("STARTUP THE VADMACHINE LOOKUP THREAD");
+		ROS_DEBUG("STARTUP THE VADMACHINE LOOKUP THREAD");
 		std::thread t(&VADClass::vadmachine_lookup_thread,this);
 		t.detach();
 
