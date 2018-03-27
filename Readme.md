@@ -23,7 +23,7 @@ Acknowledgments:
 Gonçalo S. Martins
 Luis Santos
 Jorge Dias
-GrowMeUp Project
+GrowMeUp project, funded by the European Union’s Horizon 2020 Research and Innovation Programme - Societal Challenge 1 (DG CONNECT/H) under grant agreement No 643647
 
 Copyright (c) 2018 Universidade de Coimbra
 
