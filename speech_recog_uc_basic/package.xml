@@ -2,7 +2,7 @@
 <package>
   <name>speech_recog_uc_basic</name>
   <version>1.0.0</version>
-  <description>The speech_recog_uc_basic package</description>
+  <description>The Speech Recognition Package (speech_recog_uc) is a ROS (Robot Operative System) package designed by Universidade de Coimbra, that allow robots to perform high-reliability real-time speech recognition based on a real-time Voice Activity Detection algorithm, with high efficiency and low computational resources consumption.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
