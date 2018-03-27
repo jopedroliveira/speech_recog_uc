@@ -19,10 +19,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Developed by: 
+Jose Pedro Oliveira, joliveira@deec.uc.pt
+Fernando Perdigao, fp@deec.uc.pt
+
+Copyright (c) 2018 Universidade de Coimbra
 */
 
+////////////////////////////////////////////////////////////////////////////////
+
 // EDITABLE VALUES
-//################################################
 
 // Vad Finite State Machine VADFSMCLASS.CPP
 #define START_OF_SPEECH_BACKWARD_OFFSET 3
