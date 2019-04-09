@@ -132,7 +132,7 @@ static void gResponseHandlerThread(
 		sentence.confidence = alternative.confidence();
 		sentences_pub->publish(sentence);
 		std::cout << "interim results: "<< alternative.confidence() 
-		<< " " << alternative.transcript() << std::cout;
+		<< " " << alternative.transcript() << std::endl;
 		streamer_ref->reset();
 			
 	} catch (...){
